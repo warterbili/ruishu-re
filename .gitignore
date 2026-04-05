@@ -1,0 +1,9 @@
+node_modules/
+package-lock.json
+pnpm-lock.yaml
+build/
+*.log
+.DS_Store
+Thumbs.db
+.claude/
+rs-reverse-src/

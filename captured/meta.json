@@ -1,0 +1,61 @@
+{
+  "mainjsUrl": "/Qy6JDI4LYvbD/YWB5qmnxo45M.c7790ff.js",
+  "targetUrl": "http://202.127.48.145:8888/zscq/search/jsp/vBrandSearchIndex.jsp",
+  "targetPath": "/zscq/search/jsp/vBrandSearchIndex.jsp",
+  "captureTime": "2026-04-03T15:10:54.252Z",
+  "metaTag": "",
+  "cookieJar": {
+    "version": "tough-cookie@6.0.1",
+    "storeType": "MemoryCookieStore",
+    "rejectPublicSuffixes": true,
+    "enableLooseMode": true,
+    "allowSpecialUseDomain": true,
+    "prefixSecurity": "silent",
+    "cookies": [
+      {
+        "key": "AV7KYchI7HHaS",
+        "value": "60Bclxzat4BvimSlXyc853htukaRHbXDmNFEgx8TbzHp5iS40jWu12T6DoimxdBzceTiSQu40Y9zTbL6pflMUEsA",
+        "expires": "2036-03-31T15:10:15.000Z",
+        "domain": "202.127.48.145",
+        "path": "/",
+        "httpOnly": true,
+        "hostOnly": true,
+        "creation": "2026-04-03T15:10:53.025Z",
+        "lastAccessed": "2026-04-03T15:10:54.249Z"
+      },
+      {
+        "key": "AV7KYchI7HHaT",
+        "value": "0WNKAHc0EoJ2l7mFCihYaL3wCb93IyFe9WVfzaonKbrp4Ir57Ao0Vp9KSDsqP_i1YRb8AW4R1PKUD9jECCBJjrDBqzwmcwkNgyQ94OWdq9VD.Bp507oaze9Tx3PDsq3c9Cu0yL8R5WFEixsMKnHcd7bZNHe6AofVb4fAlgaBnqFEW_7B9jWnBtKPtOwoPEI42nDxnaGieh3ayI14WKt__1CVKGWuFI3p0UEaCrGD1Gqq9G9dpSos9jo.AEmxc.gI8qSj4MVW8m.yU9XcSGRW6XZp.S2lUS.A7YEhRo0iQBjl",
+        "expires": "2026-04-10T15:10:54.000Z",
+        "domain": "202.127.48.145",
+        "path": "/",
+        "hostOnly": true,
+        "creation": "2026-04-03T15:10:54.084Z",
+        "lastAccessed": "2026-04-03T15:10:54.249Z"
+      }
+    ]
+  },
+  "codeFragments": [
+    {
+      "length": 51,
+      "preview": "(function(){ return (function(){}).constructor })()"
+    },
+    {
+      "length": 1782,
+      "preview": "$_ts=window['$_ts'];if(!$_ts)$_ts={};$_ts.nsd=81494;$_ts.cd=\"qx2xrrAlxpgkqnqlcqq"
+    },
+    {
+      "length": 205385,
+      "preview": "if($_ts.cd){\n\n(function(_$cB,_$$J){var _$lR=0;function _$$z(){var _$ft=[56];Arra"
+    },
+    {
+      "length": 296097,
+      "preview": "\n\n\n(function(_$iS,_$cF){var _$fv=0;function _$c2(){var _$jZ=[330];Array.prototyp"
+    },
+    {
+      "length": 111,
+      "preview": "(window.sdenv ? window.sdenv.memory.setTimeout : setTimeout)(() => {window.docum"
+    }
+  ],
+  "httpResponses": []
+}

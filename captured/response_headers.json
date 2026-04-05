@@ -1,0 +1,10 @@
+{
+  "server": "******",
+  "date": "Fri, 03 Apr 2026 15:02:37 GMT",
+  "content-type": "text/html; charset=utf-8",
+  "transfer-encoding": "chunked",
+  "connection": "keep-alive",
+  "set-cookie": [
+    "AV7KYchI7HHaS=6004XPMCcG7pUHomEASg46N0SF9vXj04llzM48BiOgnT030DOjuUPfDWMAkor8Vp5TnD4hENyt0GGrZMB9HGaJZq; Path=/; expires=Mon, 31 Mar 2036 15:02:37 GMT; HttpOnly"
+  ]
+}

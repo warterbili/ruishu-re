@@ -1,0 +1,17 @@
+{
+  "name": "jsrpc",
+  "version": "1.0.0",
+  "description": "通过 WebSocket RPC 调用浏览器中的瑞数方法，获取 Cookie + 后缀。 适用于所有瑞数版本（包括强制后缀的站点如药监局）。",
+  "main": "client.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "ws": "^8.20.0"
+  }
+}
