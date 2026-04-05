@@ -163,8 +163,12 @@ rs_reverse/
 ├── agentskill/                      ★ AI Agent Skill 文档
 │   └── SKILL_PLAN.md               3000行完整逆向知识 (可直接喂给 AI)
 │
-├── rs-reverse-src/                  pysunday/rs-reverse 开源参考
-│   └── src/                         参考实现源码
+├── rs-reverse-src/                  pysunday/rs-reverse 开源参考 (纯算借鉴来源)
+│   ├── src/handler/Coder.js         外层 VM 重写 (我们 coder.js 的参照)
+│   ├── src/handler/Cookie.js        加密链实现 (Huffman/AES/CRC32)
+│   ├── src/handler/basearr/         7 个站点的 basearr 适配器
+│   ├── src/handler/parser/          密钥提取/r2mka 解析
+│   └── src/handler/grenKeys.js      变量名生成 (PRNG + Fisher-Yates)
 │
 ├── captured/                        抓包数据
 │   ├── 412.html                     首次访问的 412 响应
@@ -181,7 +185,14 @@ rs_reverse/
 
 ### 1. 纯算 Cookie T (reverse/scripts/)
 
-**完全不依赖浏览器**, 纯 Node.js 实现整条加密链:
+**完全不依赖浏览器**, 纯 Node.js 实现整条加密链。
+
+本方案借鉴了 [pysunday/rs-reverse](https://github.com/pysunday/rs-reverse) 开源项目 (已收录在 `rs-reverse-src/`), 该项目已在 9+ 个瑞数站点验证通过。我们在其基础上:
+
+- 参照其 `Coder.js` 的模块结构, 重写了外层 VM 解释器 (`coder.js`)
+- 参照其 `basearr/len157.js` 的逐字段分析方法, 用数据驱动适配了我们的站点 (`basearr.js`)
+- 参照其加密链 (`Cookie.js`) 实现了 Huffman → XOR → AES-CBC → CRC32 → AES-CBC → Base64
+- 密钥提取 (`extractKeys`) 参照其 `tscd.js` 的 XOR offset 推导思路, 简化为已知 keys[0]="64" 的硬编码方式
 
 ```
 $_ts.cd → extractKeys() → 45 组密钥
@@ -194,6 +205,14 @@ basearr → Huffman → XOR → AES-CBC → CRC32 → AES-CBC → Base64 → Coo
 - `coder.js` — 外层 VM 重写 (362行), 从 mainjs 生成 eval 代码, 逐字节与原始一致
 - `basearr.js` — 明文数据构建 (304行), 8 种 TLV type 全覆盖
 - `client.js` — 完整客户端 (233行), Cookie 自动更新
+
+与 rs-reverse 的主要差异:
+| | rs-reverse | 本项目 |
+|---|---|---|
+| XOR offset | 从任务树动态计算 | 硬编码推导 (keys[0]="64") |
+| basearr 适配 | 7 个站点适配器, 手工逆向 | 数据驱动: sdenv 采集 5 组 → 逐字节对比 |
+| r2mka 解析 | 完整任务树 → fixedValue20 | 未实现 (数据驱动替代) |
+| type=2 | r2mka 查找 | cp1 索引映射 (5 session 采集) |
 
 ### 2. JsRpc 通杀 (jsrpc/)
 
