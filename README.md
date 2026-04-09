@@ -420,6 +420,10 @@ ns=<timestamp>&code=Country
 - [pysunday/rs-reverse](https://github.com/pysunday/rs-reverse) — 开源参考实现, 9+ 站点验证
 - [anthropic/claude-code](https://github.com/anthropics/claude-code) — AI 辅助逆向分析
 
+## 免责声明
+
+**本项目仅供安全研究与学习交流使用, 严禁用于任何非法用途。滥用本项目逆向成果所造成的一切法律责任和后果, 与本作者无关。**
+
 ## License
 
 MIT
