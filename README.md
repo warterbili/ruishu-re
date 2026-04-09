@@ -367,12 +367,32 @@ opcode 语义映射 (409 条)
 
 ## 方法论
 
+```
+数据驱动  →  回答 "改什么"      (basearr 每个字节的来源)
+AST 分析  →  回答 "怎么理解代码"  (eval code 函数定位 + 调用链)
+VM Hook   →  回答 "怎么拿到真实数据" (为数据驱动提供采集手段)
+```
+
 ### 数据驱动 (Cookie T / basearr)
 
 > 遇到不理解的字节 → 多采几组真实数据 → 逐字节对比 → 找规律
 
 不要读 VM 代码, 用 sdenv 采集 3-5 组真实数据, 逐字节对比找到每个字段的来源。
 我们花了 2 天读 VM 代码理解 basearr — 完全浪费。转向数据驱动后 1 天内解决。
+
+**VM Hook — 数据驱动的采集手段:**
+
+数据驱动的前提是能拿到真实数据。通过 sdenv + `vm.runInContext` 拦截, 可以在瑞数 VM 执行过程中注入 hook, 捕获中间数据:
+
+| Hook 技术 | 用途 | 示例 |
+|-----------|------|------|
+| `vm.runInContext` 拦截 | 捕获 eval 代码、提取 cd/nsd | 按 `code.length > 250000` 识别 eval 代码 |
+| `Object.defineProperty` 劫持 | 捕获 Cookie 写入时刻 | 劫持 `Document.prototype.cookie` setter |
+| IIFE 函数包装 | 追踪特定函数的输入输出 | 包装加密入口函数, 记录 basearr → cipher |
+| 逗号表达式注入 | 不改变控制流的中间值记录 | `(console.log(x), originalCall(x))` |
+| Phase 标记 | 区分不同执行阶段 | 只在加密阶段记录, 避免噪音 |
+
+完整的 22 步 hook 进化过程见 `reverse/REVERSE_ARCHIVE.md`。
 
 ### AST 分析 (URL 后缀 / eval code)
 
