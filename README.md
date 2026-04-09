@@ -15,11 +15,33 @@
 | type=2 检测值 | `[103, 101, 224, 181]` | `[225, 203, 100, 181]` |
 | cp1 索引映射 | `{11:103, 5:101, 23:224, 8:181}` | `{22:225, 21:203, 30:100, 3:181}` |
 
-### 怎么修的
+### 怎么修的 — 数据驱动, 不猜
 
-通过 **sdenv 采集 3 组真实数据 → 解密 Cookie T → 提取真实 basearr → 和纯算生成的逐字节对比**, 精确定位到 type=2 字段变化。
+纯靠数据对比定位, 过程:
 
-同时我们也把 UA/Platform 改为了与 sdenv 一致的 Mac UA + `MacIntel` (之前是 Windows UA + `Win32`), 使纯算 basearr 与真实数据完全一致。经测试 **UA 改不改都能通过验证** (服务端不校验 UA CRC32), 但保持与 sdenv 真实数据一致是更规范的做法。
+**1. sdenv 采集真实 basearr** — 跑 3 组配套数据 (同一 session 中采集 nsd + cd + Cookie T + 解密出 basearr)
+
+**2. 逐字节对比** — 把真实 basearr 和纯算生成的逐字节比, 立刻发现 type=2 全是 0:
+
+```
+type=2: ref=[225,203,100,181]  gen=[0,0,0,0]   ← 旧映射表查不到, 全返回 0
+```
+
+**3. 顺带发现 UA/Platform 也不一致** — type=3 中的 CRC32(UA) 和 platform 字段:
+
+```
+ref UA CRC: 0x9fad00ee   ← CRC32(Mac UA) 匹配
+gen UA CRC: 0x11469713   ← CRC32(Win UA)
+
+ref platform: "MacIntel"  ← sdenv 的 jsdom 默认值
+gen platform: "Win32"     ← 我们写的
+```
+
+本质是 sdenv 的 jsdom 环境中 `navigator.platform` 默认为 `"MacIntel"`, VM 收集到的指纹就是 Mac 的。
+
+**4. 验证 UA 是否必须改** — 测试了 4 种 UA 组合 (Mac/Win basearr × Mac/Win HTTP), **全部 200**。结论: 服务端不校验 UA CRC32, **type=2 才是唯一失效原因**。UA/Platform 改为 Mac 只是为了与 sdenv 真实数据对齐。
+
+> 没有猜, 全是数据对出来的 — 这就是 `SKILL_PLAN.md` 中的「数据驱动方法论」。
 
 ### 涉及文件
 
