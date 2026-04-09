@@ -44,8 +44,8 @@ class RuishuPureClient {
         this.host = config.host || '202.127.48.145';
         this.port = config.port || 8888;
         this.entryPath = config.entryPath || '/zscq/search/jsp/vBrandSearchIndex.jsp';
-        this.ua = config.userAgent || 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36';
-        this.platform = config.platform || 'Win32';
+        this.ua = config.userAgent || 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
+        this.platform = config.platform || 'MacIntel';
         this.flag = config.flag || 2830;
 
         // session 状态

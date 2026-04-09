@@ -24,7 +24,7 @@ const { buildBasearr } = require('./basearr.js');
 // ============================================================
 const HOST = '202.127.48.145', PORT = 8888;
 const PATH = '/zscq/search/jsp/vBrandSearchIndex.jsp';
-const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36';
+const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
 const BASESTR = 'qrcklmDoExthWJiHAp1sVYKU3RFMQw8IGfPO92bvLNj.7zXBaSnu0TC6gy_4Ze5d{}|~ !#$%()*+,-;=?@[]^';
 
 // ============================================================
@@ -173,7 +173,7 @@ async function main() {
         userAgent: UA,
         pathname: PATH,
         hostname: HOST,
-        platform: 'Win32',
+        platform: 'MacIntel',
         execNumberByTime: 1600,
         randomAvg: [50, 8],
         innerHeight: 768, innerWidth: 1024,

@@ -201,22 +201,13 @@ function buildType6(config, keys) {
 }
 
 function buildType2(config, keys) {
-    // 数据驱动 (5 session 采集验证):
-    // keys[29] 的变量名在 cp1 中的索引固定为 11 → 值 103
-    // keys[30] 的变量名在 cp1 中的索引固定为 5  → 值 101
-    // keys[31] 的变量名在 cp1 中的索引固定为 23 → 值 224
-    // keys[32] 的变量名在 cp1 中的索引固定为 8  → 值 181
-    // 映射关系: cp1 索引 → values 表中的值 (固定, 不随 session 变)
+    // 数据驱动 (2026-04-10 重新采集 3 session 验证):
+    // cp1 索引 → 值映射: {22:225, 21:203, 30:100, 3:181}
+    // 值固定不随 nsd 变, cp1 索引也固定
+    const cp1 = config._cp1;
+    if (!cp1) return [225, 203, 100, 181];
 
-    // 需要 cp1 来查找 keys[29..32] 的索引
-    const cp1 = config._cp1; // 必须从外部传入
-    if (!cp1) {
-        // 无 cp1 时用固定映射
-        return [103, 101, 224, 181];
-    }
-
-    // cp1 索引 → 值 映射表 (从 5 session 数据验证得到)
-    const indexToValue = { 11: 103, 5: 101, 23: 224, 8: 181 };
+    const indexToValue = { 22: 225, 21: 203, 30: 100, 3: 181 };
 
     return [29, 30, 31, 32].map(i => {
         const name = ascii2string(keys[i]);
