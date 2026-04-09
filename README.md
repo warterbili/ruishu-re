@@ -6,34 +6,39 @@
 
 > **瑞数于 2026-04-07 进行了服务端改版, 导致纯算方案返回 412。已修复。**
 
-### 什么变了
+### 失效原因
 
-瑞数服务端更新了 basearr 中的**环境检测值 (type=2)**, 导致旧的硬编码映射失效:
+瑞数服务端更新了 basearr 中的 **type=2 环境检测值**, 这是导致 412 的唯一原因:
 
 | 参数 | 旧值 (v1.0) | 新值 (v2.0) |
 |------|------------|------------|
 | type=2 检测值 | `[103, 101, 224, 181]` | `[225, 203, 100, 181]` |
 | cp1 索引映射 | `{11:103, 5:101, 23:224, 8:181}` | `{22:225, 21:203, 30:100, 3:181}` |
-| UA/Platform | Windows UA + `Win32` | Mac UA + `MacIntel` |
+
+### 怎么修的
+
+通过 **sdenv 采集 3 组真实数据 → 解密 Cookie T → 提取真实 basearr → 和纯算生成的逐字节对比**, 精确定位到 type=2 字段变化。
+
+同时我们也把 UA/Platform 改为了与 sdenv 一致的 Mac UA + `MacIntel` (之前是 Windows UA + `Win32`), 使纯算 basearr 与真实数据完全一致。经测试 **UA 改不改都能通过验证** (服务端不校验 UA CRC32), 但保持与 sdenv 真实数据一致是更规范的做法。
 
 ### 涉及文件
 
-| 文件 | 改了什么 |
-|------|---------|
-| `reverse/scripts/basearr.js` | `buildType2()` 中的 `indexToValue` 映射表 |
-| `reverse/scripts/run.js` | UA 字符串 + `platform` 参数 |
-| `reverse/scripts/client.js` | UA 字符串 + `platform` 默认值 |
+| 文件 | 改了什么 | 是否必须 |
+|------|---------|---------|
+| `reverse/scripts/basearr.js` | `buildType2()` 中的 `indexToValue` 映射表 | **必须** — 这是 412 的唯一原因 |
+| `reverse/scripts/run.js` | UA 字符串 + `platform` 参数 | 可选 — 与 sdenv 真实数据对齐 |
+| `reverse/scripts/client.js` | UA 字符串 + `platform` 默认值 | 可选 — 与 sdenv 真实数据对齐 |
 
 ### 纯算方案的局限性
 
-**纯算不是一劳永逸的。** type=2 的环境检测值是服务端动态配置的, 瑞数可以随时更新。当纯算再次返回 412 时, 需要用以下方法修复:
+**纯算不是一劳永逸的。** type=2 的环境检测值是服务端动态配置的, 瑞数可以随时更新。下次失效时, 用同样的方法修复:
 
 1. 用 **sdenv** 采集 3 组真实数据 (在同一 session 中配套采集 nsd + cd + Cookie T)
 2. 用纯算解密 Cookie T → 提取真实 basearr
 3. 和纯算生成的 basearr **逐字节对比**, 找到哪些字段变了
 4. 更新 `basearr.js` 中的对应值
 
-完整方法论见 `agentskill/SKILL_PLAN.md` 中的「数据驱动方法论」+ 阶段 4。参考采集脚本见 `test/collect_ref_data.js`。
+完整方法论见 `agentskill/SKILL_PLAN.md` 中的「数据驱动方法论」。参考采集脚本见 `test/collect_ref_data.js`。
 
 ### 生产环境推荐
 
