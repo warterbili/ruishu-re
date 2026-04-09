@@ -417,7 +417,8 @@ ns=<timestamp>&code=Country
 
 ## 致谢
 
-- [pysunday/rs-reverse](https://github.com/pysunday/rs-reverse) — 开源参考实现, 9+ 站点验证
+- [pysunday/rs-reverse](https://github.com/pysunday/rs-reverse) — 纯算开源参考实现, 9+ 站点验证
+- [pysunday/sdenv](https://github.com/pysunday/sdenv) — 补环境框架, 数据驱动采集的核心依赖
 - [anthropic/claude-code](https://github.com/anthropics/claude-code) — AI 辅助逆向分析
 
 ## 免责声明
