@@ -6,3 +6,13 @@ build/
 .DS_Store
 Thumbs.db
 .claude/
+
+# 真实抓包数据 (含 cookies/keys/session, 绝对不能上传)
+captured/
+test/
+
+# mainjs 缓存 (各目录下可能生成的)
+mainjs_cache.js
+
+# 原始 skill 备份 (本地保留, 不上传)
+agentskill/SKILL_PLAN.md

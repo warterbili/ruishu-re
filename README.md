@@ -1,6 +1,6 @@
-# 瑞数 (Ruishu) 反爬逆向 — 纯算 + AST 反编译 + JsRpc 通杀
+# 瑞数 (Ruishu) 反爬逆向 — 纯算 + AST 反编译 + JsRpc 通杀 + 顶级逆向 Skill
 
-> 从零到完整突破瑞数动态安全防护 (Rivers Security)。包含 Cookie T 纯算生成、URL 后缀 AST 深度逆向、JsRpc 通杀方案、sdenv 补环境方案, 以及一份 3000 行的 Agent Skill 文档, 让 AI 也能独立完成瑞数逆向。
+> 市面上最全的瑞数 (Rivers Security) 动态安全防护突破方案合集。不仅包含 Cookie T 纯算生成、URL 后缀 AST 深度逆向、JsRpc 通杀、sdenv 补环境四种实战方案, 还从真实逆向经验中蒸馏出一份**可复制的顶级 Agent Skill** — 让任何 AI Agent 读完即可独立完成瑞数逆向。
 
 ## v2.0 更新 (2026-04-10)
 
@@ -41,7 +41,7 @@ gen platform: "Win32"     ← 我们写的
 
 **4. 验证 UA 是否必须改** — 测试了 4 种 UA 组合 (Mac/Win basearr × Mac/Win HTTP), **全部 200**。结论: 服务端不校验 UA CRC32, **type=2 才是唯一失效原因**。UA/Platform 改为 Mac 只是为了与 sdenv 真实数据对齐。
 
-> 没有猜, 全是数据对出来的 — 这就是 `SKILL_PLAN.md` 中的「数据驱动方法论」。
+> 没有猜, 全是数据对出来的 — 这就是 `agentskill/SKILL.md` 中的「数据驱动方法论」。
 
 ### 涉及文件
 
@@ -60,7 +60,7 @@ gen platform: "Win32"     ← 我们写的
 3. 和纯算生成的 basearr **逐字节对比**, 找到哪些字段变了
 4. 更新 `basearr.js` 中的对应值
 
-完整方法论见 `agentskill/SKILL_PLAN.md` 中的「数据驱动方法论」。参考采集脚本见 `test/collect_ref_data.js`。
+完整方法论见 `agentskill/SKILL.md` 中的「方法论」章节。参考采集脚本见 `agentskill/scripts/collect_session.js`。
 
 ### 生产环境推荐
 
@@ -82,7 +82,7 @@ gen platform: "Win32"     ← 我们写的
 | **JsRpc 通杀** | WebSocket 调用浏览器中的瑞数 VM | 所有站点, 包括需要后缀的 | **已完成, 通杀验证** |
 | **sdenv 补环境** | 魔改 jsdom 模拟浏览器环境 | Cookie + 后缀, 单实例 | **已完成, 可用** |
 | **URL 后缀 AST 逆向** | AST 反编译 eval code + VM 字节码 | 深度逆向研究 | **已完成 80%, 卡在 VM 层** |
-| **Agent Skill** | 3000 行完整逆向知识文档 | AI Agent 自动化逆向 | **已完成, 可直接使用** |
+| **顶级逆向 Skill** | 工程化 skill 体系: 主文档 + 7 篇参考 + 5 个脚本 + 2 个 lib | AI Agent 自动化逆向 | **已完成, 可直接复制使用** |
 
 ## 目标���点
 
@@ -232,8 +232,25 @@ rs_reverse/
 │   ├── client.js                    sdenv 客户端
 │   └── README.md                    技术总结
 │
-├── agentskill/                      ★ AI Agent Skill 文档
-│   └── SKILL_PLAN.md               3000行完整逆向知识 (可直接喂给 AI)
+├── agentskill/                      ★ 顶级逆向 Skill (可复制给任何 AI Agent)
+│   ├── SKILL.md                     主入口 (362行, 决策树+方法论+排错指南)
+│   ├── references/                  按需加载的详细参考 (7 篇)
+│   │   ├── encryption_chain.md      阶段1: 加密链 (Huffman/AES/CRC32/Base64)
+│   │   ├── key_extraction.md        阶段2: 密钥提取
+│   │   ├── coder_rewrite.md         阶段3: 外层VM重写 + 调试6个坑
+│   │   ├── basearr_adaptation.md    阶段4: basearr数据驱动适配
+│   │   ├── ast_methodology.md       AST反编译4步流水线
+│   │   ├── suffix_analysis.md       URL后缀结构+SHA-1签名
+│   │   └── vm_hook_cookbook.md       7种VM注入技术
+│   ├── scripts/                     可直接执行的脚本 (5 个)
+│   │   ├── collect_session.js       配套数据一次性采集
+│   │   ├── hybrid_verify.js         混合验证 (证明加密链正确)
+│   │   ├── pure_run.js              纯算全流程模板
+│   │   ├── collect_type2.js         type=2多session采集
+│   │   └── sdenv_client.js          sdenv客户端
+│   └── lib/                         格式化的参考实现
+│       ├── coder.js                 外层VM重写器 (508行, 验证100%字节一致)
+│       └── basearr.js               basearr生成器 (282行, 验证HTTP 200)
 │
 ├── rs-reverse-src/                  pysunday/rs-reverse 开源参考 (纯算借鉴来源)
 │   ├── src/handler/Coder.js         外层 VM 重写 (我们 coder.js 的参照)
@@ -242,13 +259,7 @@ rs_reverse/
 │   ├── src/handler/parser/          密钥提取/r2mka 解析
 │   └── src/handler/grenKeys.js      变量名生成 (PRNG + Fisher-Yates)
 │
-├── captured/                        抓包数据
-│   ├── 412.html                     首次访问的 412 响应
-│   ├── eval_code.js                 捕获的 eval 代码 (296KB)
-│   ├── mainjs.js                    主 JS 文件
-│   └── meta.json                    meta 标签数据
-│
-└── SKILL_PLAN.md                    → agentskill/SKILL_PLAN.md 副本
+└── captured/                        抓包数据 (本地保留, 不上传 GitHub)
 ```
 
 ---
@@ -299,8 +310,8 @@ Node.js ←HTTP→ JsRpc Server ←WebSocket→ 浏览器中的瑞数 VM
 ### 3. sdenv 补环境 (sdenv/)
 
 魔改 jsdom 模拟浏览器环境, 让瑞数 JS 在 Node.js 中真实执行:
-- 优点: Cookie + 后缀都能生成
-- 限制: 单实例只能发一次 POST (Math.random 变 undefined)
+- 优点: 自动生成 Cookie, 所有瑞数站点通用
+- 注意: sdenv 本身不生成 URL 后缀, 需要后缀的站点建议用 JsRpc
 
 ### 4. URL 后缀 AST 逆向 (houzhui/)
 
@@ -349,19 +360,51 @@ opcode 语义映射 (409 条)
 
 ---
 
-## Agent Skill (agentskill/)
+## 顶级逆向 Skill (agentskill/)
 
-`SKILL_PLAN.md` 是一份 **3000+ 行的完整逆向知识文档**, 包含:
+从真实逆向经验中蒸馏出的**工程化 AI Agent Skill**, 不是一份笔记, 而是一套可以直接复制给任何 AI Agent 执行的完整知识体系。
 
-- 瑞数防护完整原理 (三层 VM 架构、加密链路、$_ts 结构)
-- 6 个阶段的逐步实现指南 (侦察 → 加密链 → 密钥提取 → VM 重写 → basearr 适配 → 验证)
-- 完整代码模板 (纯算客户端、sdenv 客户端、混合验证、数据采集)
-- 两大方法论: **数据驱动** (basearr) + **AST 分析** (后缀/eval code)
-- 从字节码到伪代码的完整反编译链路
-- 弯路警告 (来自真实踩坑经验)
-- VM 注入技术手册 (7 种注入方式)
+### 为什么叫"顶级"
 
-**设计目标**: 任何 AI Agent (如 Claude) 读完此文档, 都能独立完成瑞数保护站点的逆向。
+市面上的瑞数资料要么是零散的博客文章, 要么是开源项目的源码 (如 rs-reverse)。**没有人把完整的逆向方法论 + 踩坑经验 + 排错指南 + 可执行代码打包成一个 AI 可以直接消费的 skill。** 这是第一个。
+
+### 三层架构设计
+
+```
+agentskill/
+├── SKILL.md (362行)          ← AI 首先加载这个, 就能决策和执行
+│   ├── YAML frontmatter       Agent 自动发现 (Claude Code / Codex / Cursor)
+│   ├── 决策树                  拿到 URL → 5 步判断走哪条路
+│   ├── 6 阶段总览表            每阶段: 输入→输出→验证标准 (3行搞定)
+│   ├── 方法论                  数据驱动 + AST (各写一次, 不重复)
+│   ├── 弯路警告                6 个真实踩坑 (省你 5+ 天)
+│   ├── 排错指南                412/400/Coder不匹配/keys失败/type=2
+│   └── 站点适配 Checklist      11 项打勾即可
+│
+├── references/ (7篇)         ← 按需加载, 不污染 context window
+│   加密链 / 密钥提取 / Coder重写 / basearr适配
+│   AST方法论 / 后缀分析 / VM注入手册
+│
+├── scripts/ (5个)            ← 可直接 node 执行
+│   数据采集 / 混合验证 / 纯算全流程 / type=2采集 / sdenv客户端
+│
+└── lib/ (2个)                ← 格式化的参考实现
+    coder.js (508行) + basearr.js (282行)
+```
+
+**对比原来的单文件方案**: 主文档从 3300 行 / 53K tokens 压缩到 **362 行 / ~6K tokens** (缩减 89%), AI 首次加载成本降低一个数量级, 同时通过 references/ 保留了所有深度内容。
+
+### 核心方法论
+
+- **数据驱动** (Cookie T / basearr): 采集 3-5 组真实数据 → 逐字节对比 → 找来源。不读 VM 代码。
+- **AST 分析** (后缀 / eval code): acorn 解析 → rt[N] 函数映射 → 调用链追踪。几小时完成手工数周的量。
+- **弯路警告**: 2 天读 VM 代码 = 浪费; 1 天照搬 rs-reverse 公式 = 浪费; 数据驱动 10 分钟解决。
+
+### 使用方式
+
+**给 AI Agent**: 把 `agentskill/` 目录放到项目中, Agent 读 `SKILL.md` 即可开始工作。
+
+**给人类**: 读 `SKILL.md` 的决策树和排错指南, 按 Checklist 适配新站点。
 
 ---
 

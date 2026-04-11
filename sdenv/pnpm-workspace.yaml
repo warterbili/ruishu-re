@@ -1,3 +1,3 @@
 allowBuilds:
-  canvas: false
-  sdenv: false
+  canvas: true
+  sdenv: true
